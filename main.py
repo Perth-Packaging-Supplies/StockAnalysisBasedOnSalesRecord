@@ -65,7 +65,7 @@ itemQuantitySold.set_index("Item Number",inplace=True,drop=False)
 stockAnalysis = itemSummary.join(itemQuantitySold,how="outer").join(backOrder)
 stockAnalysis.fillna(0,inplace=True) # Some Items are not in the joins3
 stockAnalysis.drop(columns=["Item Name", "Supplier"],inplace=True)
-stockAnalysis = stockAnalysis.join(products[["Item Name","Supplier","Supplier Item Number"]])
+stockAnalysis = stockAnalysis.join(products[["Item Name","Supplier","Supplier Item Number","Sell Unit Measure","No. Items/Buy Unit","Buy Unit Measure"]])
 stockAnalysis["No. Months To Last"] = (stockAnalysis["Units On Hand"] + stockAnalysis["Units On Order"]) / stockAnalysis["Quantity"]
 
 deadStock = stockAnalysis.loc[stockAnalysis["No. Months To Last"]==np.inf]
@@ -74,8 +74,15 @@ deadStock = deadStock[["Item Number","Item Name", "Supplier","Supplier Item Numb
 stockAnalysis = stockAnalysis.loc[stockAnalysis["No. Months To Last"]!=np.inf]
 stockToBuy = stockAnalysis.loc[stockAnalysis["No. Months To Last"]<=0.5]
 stockToBuy.rename(columns={"Quantity":"Sold"},inplace=True)
-stockToBuy = stockToBuy[["Item Name", "Supplier","Supplier Item Number","Units On Hand","Units On Order","Sold","Total Value","No. Months To Last"]]
-stockToBuy["No. Items To Buy"] =  stockToBuy["Sold"] - stockToBuy["Units On Hand"] - stockToBuy["Units On Order"]
+stockToBuy = stockToBuy[["Item Name", "Supplier","Supplier Item Number","Units On Hand","Units On Order","Sold","Total Value","No. Months To Last","Sell Unit Measure","No. Items/Buy Unit","Buy Unit Measure"]]
+stockToBuy["No. Items To Buy Per Unit"] =  stockToBuy["Sold"] - stockToBuy["Units On Hand"] - stockToBuy["Units On Order"]
+stockToBuy["No. Items To Buy Per Buying Unit"] = stockToBuy["No. Items To Buy Per Unit"] / stockToBuy["No. Items/Buy Unit"]
+
+
+# Put Units on the Operations
+stockToBuy["No. Items To Buy Per Unit"] = stockToBuy.agg("{0[No. Items To Buy Per Unit]} {0[Sell Unit Measure]}".format,axis=1)
+stockToBuy["No. Items To Buy Per Buying Unit"] = stockToBuy.agg("{0[No. Items To Buy Per Buying Unit]} {0[Buy Unit Measure]}".format,axis=1)
+stockToBuy.drop(columns=["Sell Unit Measure", "Buy Unit Measure"],inplace=True)
 
 # Rearrange Columns
 itemQuantitySold = stockAnalysis[["Item Name", "Supplier","Quantity"]]
