@@ -21,6 +21,15 @@ try:
 except:
     print("itmls1.xlsx - Item Summary Report cannot be found")
 
+try:
+    # DATA: backOrder
+    backOrder = pd.read_csv("./input/rpt_purchasesgeneral.csv",header=None,usecols=[32,34])
+except:
+    print("rpt_purchasesgeneral.csv - Purchase Report cannot be found")
+
+backOrder.rename(columns={32:"Item Number",34:"Units On Order"},inplace=True)
+backOrder.set_index("Item Number",inplace=True)
+
 itemSummary.rename(columns={"Item No.":"Item Number"},inplace=True)
 itemSummary.set_index("Item Number",inplace=True)
 
@@ -42,6 +51,27 @@ itemCustomers = itemCustomers[["Item Number","Item Name", "Supplier","Company Na
 itemQuantitySold = sale.groupby("Item Number").sum().reset_index()
 itemQuantitySold.set_index("Item Number",inplace=True,drop=False)
 
+stockAnalysis = itemSummary.join(itemQuantitySold).join(backOrder)
+stockAnalysis.fillna(0,inplace=True) # Some Items are not in the joins
+stockAnalysis["No. Months To Last"] = (stockAnalysis["Units On Hand"] + stockAnalysis["Units On Order"]) / stockAnalysis["Quantity"]
+
+deadStock = stockAnalysis.loc[stockAnalysis["No. Months To Last"]==np.inf]
+deadStock = deadStock[["Item Number","Item Name", "Supplier","Units On Hand","Total Value"]]
+
+stockAnalysis = stockAnalysis.loc[stockAnalysis["No. Months To Last"]!=np.inf]
+stockToBuy = stockAnalysis.loc[stockAnalysis["No. Months To Last"]<=0.5]
+stockToBuy.rename(columns={"Quantity":"Sold"},inplace=True)
+stockToBuy = stockToBuy[["Item Number","Item Name", "Supplier","Units On Hand","Units On Order","Sold","Total Value","No. Months To Last"]]
+stockToBuy["No. Items To Buy"] =  stockToBuy["Sold"] - stockToBuy["Units On Hand"] - stockToBuy["Units On Order"]
+
+# Rearrange Columns
+itemQuantitySold = stockAnalysis[["Item Number","Item Name", "Supplier","Quantity"]]
+
+
 with pd.ExcelWriter("./output/StockAnalysis.xlsx") as writer:
     itemCustomers.to_excel(writer, sheet_name="Item With Associated Customers",index=False)
     itemQuantitySold.to_excel(writer,sheet_name="Item Quantity Sold",index=False)
+    stockAnalysis.to_excel(writer,sheet_name="Stock Analysis",index=True)
+    deadStock.to_excel(writer,sheet_name="Stock Analysis - Dead Stock",index=True)
+    stockToBuy.to_excel(writer,sheet_name="Stock Analysis - To Buy",index=True)
+
