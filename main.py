@@ -30,9 +30,9 @@ except:
     print("rpt_purchasesgeneral.csv - Purchase Report cannot be found")
 
 try:
-    products = pd.read_csv("./input/sets/products.csv",skip_blank_lines=True,skiprows=0)
+    products = pd.read_csv("./input/sets/ITEM.csv",skip_blank_lines=True,skiprows=1)
 except:
-    print("sets/products.csv - All Products cannot be found")
+    print("sets/ITEM.csv - All Products cannot be found")
 
 #Indices Initializations
 backOrder.rename(columns={32:"Item Number",34:"Units On Order"},inplace=True)

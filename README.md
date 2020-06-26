@@ -16,6 +16,7 @@ The program will require 4 main inputs, 3 of which is from MYOB, and 1 of which 
 2. Download this file, and place it where it pleases
 
 ## Input/Setup
+*MYOB Input files from Import/Export Assistance has an extra row that has the content "{}" whenever being exported. The python script can handle this, so* **DO NOT CHANGE THE FILE***
 
 ### Sales Report (ITEMSALE.csv) [MYOB]
 Data that comes from here are related to sales/ items sold.
@@ -49,7 +50,7 @@ Data that comes from here are related to backorder to ensure that the items that
 7. Change the format of the file to "csv".
 8. Save the file as "rpt_purchasesgeneral.csv" inside the input folder of the program.
 
-### Item Details report  (products.csv) [MYOB]
+### Item Details report  (ITEM.csv) [MYOB]
 This file does not need to be changed often if there are no new product codes in the system. This essentially contains extra information on the items in the warehouse such as the supplier, description, the amount of selling units per buying units.
 1. Locate the file - This can be found in MYOB:  File (Top-left corner) >> Import/Export Assistance
 2. Select **Export Data**. Press Next
@@ -58,7 +59,7 @@ This file does not need to be changed often if there are no new product codes in
 5. Select the date range (recommended is 1 Month before up to Today). Press Next
 6. Select the seperate data using "Commas", and Make sure the field "Include field headers in the file" is checked. Press next
 7. Export All fields
-8. Press Next to export and save as "products.csv" inside the input/sets folder of the program. (You may need to change the save as type to "All Files", and change the format name)
+8. Press Next to export and save as "ITEM.csv" inside the input/sets folder of the program. (You may need to change the save as type to "All Files", and change the format name)
 
 ## Execution
 After finishing the setup - exporting of the files. You can start the program either by running "start.bat" or typing in the terminal that is pointed inside the directory of this file "python main.py"
