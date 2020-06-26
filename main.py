@@ -89,10 +89,11 @@ itemQuantitySold = stockAnalysis[["Item Name", "Supplier","Quantity"]]
 
 
 with pd.ExcelWriter("./output/StockAnalysis.xlsx") as writer:
-    itemCustomers.to_excel(writer, sheet_name="Item With Associated Customers",index=False)
-    itemQuantitySold.to_excel(writer,sheet_name="Item Quantity Sold",index=False)
     stockAnalysis.to_excel(writer,sheet_name="Stock Analysis",index=True)
     deadStock.to_excel(writer,sheet_name="Stock Analysis - Dead Stock",index=True)
     stockToBuy.to_excel(writer,sheet_name="Stock Analysis - To Buy",index=True)
+    itemCustomers.to_excel(writer, sheet_name="Item With Associated Customers",index=False)
+    itemQuantitySold.to_excel(writer,sheet_name="Item Quantity Sold",index=False)
+
 
 print("END")
