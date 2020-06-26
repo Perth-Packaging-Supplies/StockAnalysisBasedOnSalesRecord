@@ -30,7 +30,7 @@ except:
     print("rpt_purchasesgeneral.csv - Purchase Report cannot be found")
 
 try:
-    products = pd.read_csv("./input/sets/ITEM.csv",skip_blank_lines=True,skiprows=1)
+    products = pd.read_csv("./input/sets/ITEM.txt",skip_blank_lines=True,skiprows=1,sep='\t', engine='python')
 except:
     print("sets/ITEM.csv - All Products cannot be found")
 
