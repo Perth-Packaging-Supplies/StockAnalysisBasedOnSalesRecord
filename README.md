@@ -1,4 +1,5 @@
 # MYOB with WMS Stock Analyzer Based on Sales (Stock Analysis)
+Video Documentation Link: https://youtu.be/UavIboqfViA
 
 # What is it?
 This is a program that will analyze the following:
