@@ -3,7 +3,7 @@ Video Documentation Link: https://youtu.be/UavIboqfViA
 
 # What is it?
 This is a program that will analyze the following:
-- The list of stocks that will need to be ordered to maintain the supply based on the record. For example, if your analysis on 1 month, the program will determine the number of items to maintain 1 month of stock.
+- The list of stocks that will need to be ordered to maintain the supply based on the record. For example, if your analysis on 1 month, the program will determine the number of items to maintain 2 weeks of stock.
 - The list of stocks that are considered "dead stocks", in other words, stocks that exists in the warehouse, but no supply chain established on the product
 - The details on each stocks that are currently in the warehouse and the duration to last.
 - Name and count of customers that are associated with a specific stock
