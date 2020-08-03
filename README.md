@@ -9,7 +9,7 @@ This is a program that will analyze the following:
 - Name and count of customers that are associated with a specific stock
 
 # How To Use
-The program will require 4 main inputs, 3 of which is from MYOB, and 1 of which is from WMS.
+The program will require 6 main inputs, 5 of which is from MYOB, and 1 of which is from WMS.
 *Note: The name of the file has to match the name specified here for the program to work. Otherwise you will just be notified for missing files. The names of the file are based on the default name of the file when exported for convenience.*
 
 ## Installation
@@ -19,20 +19,20 @@ The program will require 4 main inputs, 3 of which is from MYOB, and 1 of which 
 ## Input/Setup
 *MYOB Input files from Import/Export Assistance has an extra row that has the content "{}" whenever being exported. The python script can handle this, so* **DO NOT CHANGE THE FILE***
 
-### Sales Report (ITEMSALE.csv) [MYOB]
+### 3 Sales Report ([ITEMSALE-2.csv,ITEMSALE-4.csv,ITEMSALE-12.csv]) [MYOB]
 Data that comes from here are related to sales/ items sold.
 1. Locate the file - This can be found in MYOB:  File (Top-left corner) >> Import/Export Assistance
 2. Select **Export Data**. Press Next
 3. Select "Sales" as the file to export.
 4. Select "Item Sales" as the type of sales.
-5. Select the date range (recommended is 1 Month before up to Today). Press Next
+5. Select the date range (recommended is [2 weeks, 4 weeks, 12 weeks] before up to Today). Press Next
 6. Select the seperate data using "Commas", and Make sure the field "Include field headers in the file" is checked. Press next
 7. Export the fields:
    1. Item Number
    2. Quantity
    3. Co./Last Name
    4. Item Description
-8. Press Next to export and save as "ITEMSALE.csv" inside the input folder of the program. (You may need to change the save as type to "All Files", and change the format name)
+8. Press Next to export and save as "ITEMSALE-#.csv" inside the input folder of the program replacing "#" with number of weeks (2, 4 or 12). (You may need to change the save as type to "All Files", and change the format name)
 
 ### Inventory Report (itmls1.xlsx) [MYOB]
 Data that comes from here are related to the current state of the inventory/warehouse
@@ -56,15 +56,20 @@ This file does not need to be changed often if there are no new product codes in
 1. Locate the file - This can be found in MYOB:  File (Top-left corner) >> Import/Export Assistance
 2. Select **Export Data**. Press Next
 3. Select "Items" as the file to export.
-4. Select "Item Sales" as the type of sales.
-5. Select the date range (recommended is 1 Month before up to Today). Press Next
-6. Select the seperate data using "tabs", and Make sure the field "Include field headers in the file" is checked. Press next
-7. Export All fields
-8. Press Next to export and save as "ITEM.txt" inside the input/sets folder of the program. (You may need to change the save as type to "All Files", and change the format name)
+4. Select the seperate data using "tabs", and Make sure the field "Include field headers in the file" is checked. Press next
+5. Export All fields
+6. Press Next to export and save as "ITEM.txt" inside the input/sets folder of the program. (You may need to change the save as type to "All Files", and change the format name)
 
 ## Execution
 After finishing the setup - exporting of the files. You can start the program either by running "start.bat" or typing in the terminal that is pointed inside the directory of this file "python main.py"
 
 ## Output
-The execution of the program will output a file called "StockAnalysis.xlsx" that can be found inside the output folder of the program.
+The execution of the program will output a files called "SA-[DateToday]-[Type].xlsx" that can be found inside the output folder of the program. The file will have the date today and the type:
+- Based2WeekSale
+- Based4WeekSale
+- Based12WeekSale
+- DifferenceAnalysis
+
+
+The "Based[NoWeeks]WeekSale" will determine the stock analysis based on **NoWeeks** (no of weeks) sales record. The **Difference Analysis** will analyze the different NoWeeks sale to determine the variation and helps in picking the correct type for a specific item.
 
