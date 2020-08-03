@@ -96,7 +96,7 @@ for index, salesReportFile in enumerate(SALES_REPORT_FILES):
     stockToBuy = stockAnalysis.loc[stockAnalysis["No. Weeks to Last"]<TARGET]
     stockToBuy.rename(columns={"Quantity":"Sold"},inplace=True)
     stockToBuy = stockToBuy[["Item Name", "Supplier","Supplier Item Number","Units On Hand","Units On Order","Sold","Total Value","No. Weeks to Last","Sell Unit Measure","No. Items/Buy Unit","Buy Unit Measure"]]
-    stockToBuy["No. Items To Buy Per Unit"] =  stockToBuy["Sold"] - stockToBuy["Units On Hand"] - stockToBuy["Units On Order"]
+    stockToBuy["No. Items To Buy Per Unit"] = ( TARGET*stockToBuy["Sold"] / REPORT_SPAN) - stockToBuy["Units On Hand"] - stockToBuy["Units On Order"]
     stockToBuy["No. Items To Buy Per Buying Unit"] = stockToBuy["No. Items To Buy Per Unit"] / stockToBuy["No. Items/Buy Unit"]
 
 
