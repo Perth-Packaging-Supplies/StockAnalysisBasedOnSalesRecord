@@ -151,8 +151,13 @@ summarizedStockAnalysis["VAR of No. Weeks To Last"] = summarizedStockAnalysis["S
 for valueColumn in VALUE_COLUMNS:
     summarizedStockAnalysis["Zscore of {}".format(valueColumn)] = (summarizedStockAnalysis[valueColumn] - summarizedStockAnalysis["MEAN of No. Weeks To Last"]) / summarizedStockAnalysis["STD of No. Weeks To Last"]
 
+summarizedStockAnalysis.fillna(0,inplace=True) # Fill 0 for the stock Analysis with indeterminate z-score
+ZSCORE_COLUMNS = ["Zscore of {}".format(valueColumn) for valueColumn in VALUE_COLUMNS]
+colRangeZscore = summarizedStockAnalysis.loc[:, ZSCORE_COLUMNS]
+summarizedStockAnalysis["Range of Zscores"] = colRangeZscore.max(axis=1) - colRangeZscore.min(axis=1)
+
 with pd.ExcelWriter("./output/{}".format(OUTPUT_FILENAME)) as writer:
-    summarizedStockAnalysis.to_excel(writer, sheet_name="Difference Analysis", index=True)
+    summarizedStockAnalysis.sort_values(by=["Range of Zscores"]).to_excel(writer, sheet_name="Difference Analysis", index=True)
 
 print("Successfully Generated {}".format(OUTPUT_FILENAME))
 
