@@ -93,7 +93,7 @@ for index, salesReportFile in enumerate(SALES_REPORT_FILES):
     deadStock = deadStock[["Item Number","Item Name", "Supplier","Supplier Item Number","Units On Hand","Total Value"]]
 
     stockAnalysis = stockAnalysis.loc[stockAnalysis["No. Weeks to Last"]!=np.inf]
-    stockToBuy = stockAnalysis.loc[stockAnalysis["No. Weeks to Last"]<=TARGET]
+    stockToBuy = stockAnalysis.loc[stockAnalysis["No. Weeks to Last"]<TARGET]
     stockToBuy.rename(columns={"Quantity":"Sold"},inplace=True)
     stockToBuy = stockToBuy[["Item Name", "Supplier","Supplier Item Number","Units On Hand","Units On Order","Sold","Total Value","No. Weeks to Last","Sell Unit Measure","No. Items/Buy Unit","Buy Unit Measure"]]
     stockToBuy["No. Items To Buy Per Unit"] =  stockToBuy["Sold"] - stockToBuy["Units On Hand"] - stockToBuy["Units On Order"]
@@ -110,9 +110,9 @@ for index, salesReportFile in enumerate(SALES_REPORT_FILES):
 
     OUTPUT_FILENAME = "SA-{}-Based{}WeekSale.xlsx".format(TODAY.strftime("%m-%d-%Y"),REPORT_SPAN)
     with pd.ExcelWriter("./output/{}".format(OUTPUT_FILENAME)) as writer:
+        stockToBuy.to_excel(writer,sheet_name="Stock Analysis - To Buy",index=True)
         stockAnalysis.to_excel(writer,sheet_name="Stock Analysis",index=True)
         deadStock.to_excel(writer,sheet_name="Stock Analysis - Dead Stock",index=True)
-        stockToBuy.to_excel(writer,sheet_name="Stock Analysis - To Buy",index=True)
         itemCustomers.to_excel(writer, sheet_name="Item With Associated Customers",index=False)
         itemQuantitySold.to_excel(writer, sheet_name="Item Quantity Sold", index=False)
 
@@ -142,7 +142,8 @@ summarizedStockAnalysis.fillna(0,inplace=True)
 OUTPUT_FILENAME = "SA-{}-DifferenceAnalysis.xlsx".format(TODAY.strftime("%m-%d-%Y"))
 VALUE_COLUMNS = ["No. Weeks to Last ({})".format(reportSpanValue) for reportSpanValue in SALES_REPORT_SPAN]
 
-colRange = summarizedStockAnalysis.loc[:, VALUE_COLUMNS[0] : VALUE_COLUMNS[-1]]
+colRange = summarizedStockAnalysis.loc[:, VALUE_COLUMNS]
+# Row Calculation
 summarizedStockAnalysis["MEAN of No. Weeks To Last"] = colRange.mean(axis=1)
 summarizedStockAnalysis["STD of No. Weeks To Last"] = colRange.std(axis=1)
 summarizedStockAnalysis["VAR of No. Weeks To Last"] = summarizedStockAnalysis["STD of No. Weeks To Last"] ** 2
